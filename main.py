@@ -1,9 +1,23 @@
+import argparse
 import search_tools
 import scraper
 from analyzers import find_careers_page
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Find job openings for a specific company.")
+    
+    parser.add_argument(
+        "company_name", 
+        type=str, 
+        nargs='+', 
+        help="The name of the company to search for (e.g. 'TechSmith' or 'Home Depot')"
+    )
+    
+    return parser.parse_args()
+
 def main():
-    target_company = "TechSmith"
+    args = parse_arguments()
+    target_company = " ".join(args.company_name)
     
     # Step 1: Find the main website
     website = search_tools.find_company_website(target_company)
