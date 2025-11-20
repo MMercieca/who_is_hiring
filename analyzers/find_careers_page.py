@@ -25,7 +25,7 @@ def find_careers_page(links):
             {'role': 'user', 'content': prompt},
         ])
         
-        best_link = response['message']['content'].strip().strip('"').strip("'")
+        best_link = response['message']['content'].strip().strip('"').strip("'").strip("`")
         return best_link
 
     except Exception as e:
