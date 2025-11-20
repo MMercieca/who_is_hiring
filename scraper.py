@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 def get_html_content(url):
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Lynx/2.8.7rel.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/1.0.0a"
     }
 
     try:
@@ -25,10 +25,38 @@ def extract_links(html, base_url):
         text = tag.get_text(strip=True)
         href = tag['href']
         
+        # Basic cleanup
         if text and href and not href.startswith(('javascript', '#', 'mailto')):
-            # Handle relative links (e.g., "/jobs" -> "https://site.com/jobs")
             if href.startswith('/'):
                 href = base_url.rstrip('/') + href
-            links.append({"text": text, "url": href})
             
-    return links[:100]
+            # Create the link object
+            link_obj = {"text": text, "url": href}
+            
+            # --- SCORE THE LINK ---
+            # specific keywords get a high score (0 = highest priority)
+            lower_text = text.lower()
+            lower_href = href.lower()
+            
+            priority = 2 # Default priority (lowest)
+            
+            # Priority 0: High confidence keywords
+            if any(x in lower_text for x in ['career', 'job', 'opening', 'join us', 'apply', 'apply now', 'work with']):
+                priority = 0
+            elif any(x in lower_href for x in ['career', 'job', 'opening', 'apply']): # distinct from text
+                priority = 0
+                
+            # Priority 1: Weaker keywords
+            elif any(x in lower_text for x in ['about', 'team', 'company']):
+                priority = 1
+
+            # Store with priority for sorting
+            links.append((priority, link_obj))
+            
+    # Sort by priority (0 first, then 1, then 2)
+    links.sort(key=lambda x: x[0])
+    
+    # Extract just the link objects and take the top 100
+    sorted_links = [x[1] for x in links]
+    
+    return sorted_links[:100]
