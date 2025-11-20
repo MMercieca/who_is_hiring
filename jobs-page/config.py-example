@@ -4,5 +4,5 @@
 OLLAMA_MODEL = 'phi4:latest'
 
 # Google Keys
-GOOGLE_API_KEY="AIzaSyCaUY_jwEVzWSRtLYwH3wm7Le5FuZbOPj8"
-GOOGLE_CX_ID="f40da1ad7aa2c408c"
+GOOGLE_API_KEY=""
+GOOGLE_CX_ID=""
