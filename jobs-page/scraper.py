@@ -11,7 +11,7 @@ def get_html_content(url):
         response.raise_for_status()
         return response.text
     except Exception as err:
-        print(f"Download Error: {err}")
+        print(f"Info --- Download Error: {err}")
         return None
 
 def extract_links(html, base_url):

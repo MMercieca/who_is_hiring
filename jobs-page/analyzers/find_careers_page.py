@@ -33,7 +33,7 @@ def find_careers_page(links):
         
         content = response['message']['content']
         
-        url_match = re.search(r'https?://[^\s"<>]+', content)
+        url_match = re.search(r'https?://[^\s"\'\`<>]+', content)
         
         if url_match:
             return url_match.group(0)
@@ -48,5 +48,5 @@ def find_careers_page(links):
         return content.strip().strip('"').strip("'").strip("`").strip("`")
         
     except Exception as e:
-        print(f"Ollama Error: {e}")
+        print(f"Info --- Ollama Error: {e}")
         return None

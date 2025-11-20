@@ -16,7 +16,7 @@ def extract_jobs_from_links(links):
     # We process links in chunks of 50 to avoid overwhelming the context window
     chunk_size = 50
     
-    print(f"Analyzing {len(links)} links to find specific job openings...")
+    print(f"Info --- Analyzing {len(links)} links to find specific job openings...")
 
     for i in range(0, len(links), chunk_size):
         chunk = links[i:i + chunk_size]
@@ -57,9 +57,9 @@ def extract_jobs_from_links(links):
                 found_jobs.extend(batch_jobs)
                 
         except json.JSONDecodeError:
-            print("Warning: AI returned invalid JSON. Skipping this batch.")
+            print("Info --- Warning: AI returned invalid JSON. Skipping this batch.")
         except Exception as e:
-            print(f"Error in job extraction: {e}")
+            print(f"Info --- Error in job extraction: {e}")
 
     # Remove duplicates based on URL
     unique_jobs = {v['url']: v for v in found_jobs}.values()

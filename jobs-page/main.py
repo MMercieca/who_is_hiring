@@ -22,16 +22,16 @@ def main():
     # Step 1: Find the main website
     website = search_tools.find_company_website(target_company)
     if not website:
-        print("Could not find company website.")
+        print("Info --- Could not find company website.")
         return
-    print(f"Found Website: {website}")
+    print(f"Info --- Found Website: {website}")
 
     # Step 2: Find the broad career page via Google
     broad_career_page = search_tools.find_initial_career_page(website)
     if not broad_career_page:
-        print("Could not find a career page via Google.")
+        print("Info --- Could not find a career page via Google.")
         return
-    print(f"Initial Career Page: {broad_career_page}")
+    print(f"Info --- Initial Career Page: {broad_career_page}")
 
     # Step 3: Download that page
     html_content = scraper.get_html_content(broad_career_page)
@@ -42,23 +42,23 @@ def main():
     # Step 5: Use AI to find the specific job board link
     final_link = find_careers_page(page_links)
     
-    print("-" * 30)
-    print(f"The detailed job list is likely here: \n{final_link}")
-    print("-" * 30)
+    print("Info ---", "-" * 30)
+    print(f"Info --- The detailed job list is likely here: {final_link}")
+    print("Info ---", "-" * 30)
 
     # 4. Extract Job Titles and URLs
-    print("Downloading job listing page...")
+    print("Info --- Downloading job listing page...")
     listings_html = scraper.get_html_content(final_link)
     
     # Get all raw links from that page
-    raw_links = scraper.extract_links(listings_html, final_link)
+    raw_links = scraper.extract_links(listings_html, website)
     
     # Use AI to filter down to just the job postings
     jobs = job_extractor.extract_jobs_from_links(raw_links)
 
-    print(f"\nFound {len(jobs)} potential job postings:")
+    print(f"\nInfo --- Found {len(jobs)} potential job postings:")
     for job in jobs:
-        print(f"- {job['title']}: {job['url']}")
+        print(f"\"{target_company}\",\"{job['title']}\",\"{job['url']}\"")
 
 # This is the standard boilerplate to run the script
 if __name__ == "__main__":
