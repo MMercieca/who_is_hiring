@@ -14,19 +14,19 @@ To get the list of companies that employ people in your network:
 
 2. Select "Settings and Privacy"
 
-![LinkedIn Settings and Privacy selection](./find-companies-1.png)
+<img src="./find-companies-1.png" width="450px" alt="LinkedIn Settings and Privacy selection" />
 
 3. Select "Data Privacy"
 
 4. Select "Get a copy of your data"
 
-![LinkedIn Data Privacy -> Get a copy of your data]
+<img src="./find-companies-2.png" width="450px" alt="LinkedIn Data Privacy -> Get a copy of your data" />
 
 5. Request a new archive of your data if you have not before.
 
 6. Request everything
 
-![LinkedIn -> Download larger data archive...](./find-companies-3.png)
+<img src="./find-companies-3.png" width="450px" alt="LinkedIn -> Download larger data archive..." />
 
 The file that we are after is `Connections.csv`.  As far as I can tell, it only exists in the large data set.  Given the delays in requesting LinkedIn data, I haven't been able to go through all of the options, but I know the file is there in this one.
 
@@ -50,9 +50,15 @@ Or, if you don't have the Unix text processing tools, you can do this in Google 
 
 9b. Select "File" -> "Import"
 
-![Google Sheets -> File -> Import](./find-companies-4.png)
+<img src="./find-companies-4.png" width="450px" alt="Google Sheets -> File -> Import" />
 
-9c. Find an empty column and enter the formula
+9c. Select "Upload a new file" and upload your `Connections.csv`.
+
+You can use the "Replace sheet" option when prompted.
+
+<img src="./find-companies-5.png" width="450px" alt="Import -> Upload a new File" />
+
+9d. Find an empty column and enter the formula
 
 ```
 sort(unique(E2:2999))
