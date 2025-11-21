@@ -7,7 +7,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Find job openings for a specific company.")
     
     parser.add_argument(
-        "company_name", 
+        "fields", 
         type=str, 
         nargs='+', 
         help="The name of the company to search for (e.g. 'TechSmith' or 'Home Depot')"
@@ -15,10 +15,14 @@ def parse_arguments():
     
     return parser.parse_args()
 
-def main():
-    args = parse_arguments()
-    target_company = " ".join(args.company_name)
-    
+def read_from_file(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            target_company = line.strip()
+            search_company(target_company)
+
+def search_company(target_company):
     # Step 1: Find the main website
     website = search_tools.find_company_website(target_company)
     if not website:
@@ -60,6 +64,14 @@ def main():
     print(f"\"{target_company}\",\"careers page\",\"{final_link}\"")
     for job in jobs:
         print(f"\"{target_company}\",\"{job['title']}\",\"{job['url']}\"")
+
+def main():
+    args = parse_arguments()
+    if args.fields[0] == "file":
+        read_from_file(args.fields[1])
+    else:
+        target_company = " ".join(args.fields)
+        search_company(target_company)
 
 # This is the standard boilerplate to run the script
 if __name__ == "__main__":
