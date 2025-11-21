@@ -56,7 +56,8 @@ def main():
     # Use AI to filter down to just the job postings
     jobs = job_extractor.extract_jobs_from_links(raw_links)
 
-    print(f"\nInfo --- Found {len(jobs)} potential job postings:")
+    print(f"Info --- Found {len(jobs)} potential job postings:")
+    print(f"\"{target_company}\",\"careers page\",\"{final_link}\"")
     for job in jobs:
         print(f"\"{target_company}\",\"{job['title']}\",\"{job['url']}\"")
 
