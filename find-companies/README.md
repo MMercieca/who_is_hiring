@@ -61,7 +61,7 @@ You can use the "Replace sheet" option when prompted.
 9d. Find an empty column and enter the formula
 
 ```
-sort(unique(E2:2999))
+sort(unique(E2:E999))
 ```
 
 This will produce an alphabetized list of companies that people in your network work for.  The alphabetizing isn't strictly necessary, but I find it easier to navigate.
