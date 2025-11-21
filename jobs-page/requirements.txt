@@ -1,7 +1,5 @@
 ollama
-json
 config
-re
 requests
 bs4
 argparse
