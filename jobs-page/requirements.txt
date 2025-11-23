@@ -3,3 +3,4 @@ config
 requests
 bs4
 argparse
+openai

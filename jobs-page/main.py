@@ -1,8 +1,6 @@
 import argparse
-import search_tools
 import scraper
 from analyzers import find_careers_page, job_extractor
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Find job openings for a specific company.")
     
@@ -24,14 +22,16 @@ def read_from_file(filename):
 
 def search_company(target_company):
     # Step 1: Find the main website
-    website = search_tools.find_company_website(target_company)
-    if not website:
-        print("Info --- Could not find company website.")
-        return
-    print(f"Info --- Found Website: {website}")
+    # website = search_tools.find_company_website(target_company)
+    # website = 
+    # if not website:
+    #     print("Info --- Could not find company website.")
+    #     return
+    # print(f"Info --- Found Website: {website}")
 
-    # Step 2: Find the broad career page via Google
-    broad_career_page = search_tools.find_initial_career_page(website)
+    # # Step 2: Find the broad career page via Google
+    # broad_career_page = search_tools.find_initial_career_page(website)
+    broad_career_page = find_careers_page(target_company)
     if not broad_career_page:
         print("Info --- Could not find a career page via Google.")
         return
@@ -41,7 +41,7 @@ def search_company(target_company):
     html_content = scraper.get_html_content(broad_career_page)
     
     # Step 4: Extract links
-    page_links = scraper.extract_links(html_content, website)
+    page_links = scraper.extract_links(html_content, "")
     
     # Step 5: Use AI to find the specific job board link
     final_link = find_careers_page(page_links)
@@ -55,7 +55,7 @@ def search_company(target_company):
     listings_html = scraper.get_html_content(final_link)
     
     # Get all raw links from that page
-    raw_links = scraper.extract_links(listings_html, website)
+    raw_links = scraper.extract_links(listings_html, "")
     
     # Use AI to filter down to just the job postings
     jobs = job_extractor.extract_jobs_from_links(raw_links)

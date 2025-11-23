@@ -1,9 +1,10 @@
 import requests
+import config
 from bs4 import BeautifulSoup
 
 def get_html_content(url):
     headers = {
-        "User-Agent": "Lynx/2.8.7rel.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/1.0.0a"
+        "User-Agent": config.USER_AGENT
     }
 
     try:

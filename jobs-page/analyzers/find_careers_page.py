@@ -1,4 +1,4 @@
-import ollama
+from openai import OpenAI
 import json
 import config
 import re
@@ -10,15 +10,11 @@ def find_careers_page(links):
     links_str = json.dumps(links, indent=2)
     
     prompt = f"""
-    You are a helpful assistant that identifies job pages.
-    Below is a list of links from a company website.
-    Identify the ONE link that most likely leads to a list of open job positions.
-    
-    Prioritize links that match these terms:
-    1. "Apply Now" or "Search Jobs"
-    2. "Openings" or "Vacancies"
-    3. "Join our Team" or "Work with us"
-    4. "Careers" or "Jobs"
+    You are a helpful assistant that identifies job pages.  Search the web
+    to find the page that lists the open positions for the target company.
+
+    Be careful.  Be sure to search the official company website.  Return the page
+    that lists all of the open positions.  Return ONLY the URL for that page.
     
     Return ONLY the URL. Do not explain. If none are relevant, return "None".
 
@@ -27,11 +23,13 @@ def find_careers_page(links):
     """
 
     try:
-        response = ollama.chat(model=config.OLLAMA_MODEL, messages=[
-            {'role': 'user', 'content': prompt},
-        ])
+        openai = OpenAI(api_key=config.OPENAI_KEY)
+        response = openai.chat.completions.create(
+            model=config.OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}]
+        )
         
-        content = response['message']['content']
+        content = response.choices[0].message.content
         
         url_match = re.search(r'https?://[^\s"\'\`<>]+', content)
         
@@ -48,5 +46,5 @@ def find_careers_page(links):
         return content.strip().strip('"').strip("'").strip("`").strip("`")
         
     except Exception as e:
-        print(f"Info --- Ollama Error: {e}")
+        print(f"Info --- LLM Error: {e}")
         return None

@@ -1,13 +1,11 @@
 # analyzers/job_extractor.py
-import ollama
+from openai import OpenAI
 import json
 import config
 
 def extract_jobs_from_links(links):
-    """
-    Takes a list of link dictionaries: [{'text': '...', 'url': '...'}, ...]
-    Returns a list of found jobs: [{'title': '...', 'url': '...'}]
-    """
+    openai = OpenAI(api_key=config.OPENAI_KEY)
+
     if not links:
         return []
 
@@ -41,11 +39,12 @@ def extract_jobs_from_links(links):
         """
 
         try:
-            response = ollama.chat(model=config.OLLAMA_MODEL, messages=[
-                {'role': 'user', 'content': prompt},
-            ])
+            response = openai.chat.completions.create(
+                model=config.OPENAI_MODEL,
+                messages=[{"role": "user", "content": prompt}]
+            )
             
-            content = response['message']['content']
+            content = content = response.choices[0].message.content
             
             # Clean up common LLM mistakes (Markdown code blocks)
             content = content.replace("```json", "").replace("```", "").strip()
