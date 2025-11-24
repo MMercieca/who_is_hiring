@@ -1,4 +1,3 @@
-# analyzers/job_extractor.py
 from openai import OpenAI
 import json
 import config

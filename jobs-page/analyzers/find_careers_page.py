@@ -1,9 +1,7 @@
-from openai import OpenAI
-import config
-import re
+from analyzers import ask_ai
 
-def find_careers_page(target_company, company_website):
-    if not company_website:
+def find_careers_page(links):
+    if not links:
         return None
 
     prompt = f"""
@@ -20,33 +18,9 @@ def find_careers_page(target_company, company_website):
     
     Return ONLY the URL of the careers page. Do not explain. If it is not found, return "None".
 
-    Company: {target_company}
-    Company website: {company_website}
+    Input Links:
+    {links}
     """
 
-    try:
-        openai = OpenAI(api_key=config.OPENAI_KEY)
-        response = openai.chat.completions.create(
-            model=config.OPENAI_MODEL,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        
-        content = response.choices[0].message.content
-        
-        url_match = re.search(r'https?://[^\s"\'\`<>]+', content)
-        
-        if url_match:
-            return url_match.group(0)
-        
-        # 2. Fallback: If you have relative links (e.g., /jobs), look for those
-        # (Only needed if your scraper didn't convert them to absolute URLs earlier)
-        relative_match = re.search(r'/[a-zA-Z0-9/_.-]+', content)
-        if relative_match:
-            return relative_match.group(0)
-            
-        # If regex finds nothing, try a basic clean as a last resort
-        return content.strip().strip('"').strip("'").strip("`").strip("`")
-        
-    except Exception as e:
-        print(f"Info --- LLM Error: {e}")
-        return None
+
+    return ask_ai.query(prompt)

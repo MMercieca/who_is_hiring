@@ -1,6 +1,7 @@
 import argparse
 import scraper
-from analyzers import find_careers_page, job_extractor, find_job_listings, find_company_website
+from analyzers import find_company_website, find_careers_page, find_job_listings, job_extractor
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Find job openings for a specific company.")
     
@@ -21,30 +22,25 @@ def read_from_file(filename):
             search_company(target_company)
 
 def search_company(target_company):
+    # 1. Get company website
     company_website = find_company_website(target_company)
     print(f"Info --- Company website: {company_website}")
+    
+    # 2. Find careers page
     company_website_content = scraper.get_html_content(company_website)
     company_website_links = scraper.extract_links(company_website_content, company_website)
-
-    broad_career_page = find_job_listings(company_website_links)
-
-    if not broad_career_page:
-        print("Info --- Could not find a career page.")
-        return
-    print(f"Info --- The careers page is likely here: {broad_career_page}")
-    print("Info --- Downloading job listing page...")
-    careers_page_content = scraper.get_html_content(broad_career_page)
-    careers_page_links = scraper.extract_links(careers_page_content, broad_career_page)
+    career_page = find_careers_page(company_website_links)
+    print(f"Info --- The careers page is likely here: {career_page}")
     
-    # Find the page that has the postings
-    jobs_page = find_job_listings(careers_page_links)
+    # 3. Find the page that has the listings
+    careers_page_content = scraper.get_html_content(career_page)
+    careers_page_links = scraper.extract_links(careers_page_content, career_page)
+    jobs_page = find_job_listings(careers_page_links, career_page)
     print(f"Info --- Job openings page: {jobs_page}")
     
-    # Download jobs postings
+    # 4. Download jobs postings and display
     jobs_page_content = scraper.get_html_content(jobs_page)
     jobs_links = scraper.extract_links(jobs_page_content, jobs_page)
-
-    # Use AI to filter down to just the job postings
     jobs = job_extractor.extract_jobs_from_links(jobs_links, jobs_page)
 
     print(f"Info --- Found {len(jobs)} potential job postings:")
