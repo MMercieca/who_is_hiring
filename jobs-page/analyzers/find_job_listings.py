@@ -1,27 +1,29 @@
 from openai import OpenAI
+import json
 import config
 import re
 
-def find_careers_page(target_company, company_website):
-    if not company_website:
+def find_job_listings(links):
+    if not links:
         return None
 
+    links_str = json.dumps(links, indent=2)
+    
     prompt = f"""
-    You are a research assistant that identifies careers pages.  Search the links
-    to identify which link is the careers page.
-
-    Be careful.  
-
+    You are a helpful assistant that identifies job pages.
+    Below is a list of links from a company website.
+    Identify the ONE link that most likely leads to a list of open job positions.
+    
     Prioritize links that match these terms:
     1. "Apply Now" or "Search Jobs"
     2. "Openings" or "Vacancies"
     3. "Join our Team" or "Work with us"
     4. "Careers" or "Jobs"
     
-    Return ONLY the URL of the careers page. Do not explain. If it is not found, return "None".
+    Return ONLY the URL. Do not explain. If none are relevant, return "None".
 
-    Company: {target_company}
-    Company website: {company_website}
+    Links:
+    {links_str}
     """
 
     try:

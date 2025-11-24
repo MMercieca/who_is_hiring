@@ -3,7 +3,7 @@ from openai import OpenAI
 import json
 import config
 
-def extract_jobs_from_links(links):
+def extract_jobs_from_links(links, base_url):
     openai = OpenAI(api_key=config.OPENAI_KEY)
 
     if not links:

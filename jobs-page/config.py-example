@@ -2,7 +2,3 @@
 
 # Ollama Model to use
 OLLAMA_MODEL = 'phi4:latest'
-
-# Google Keys
-GOOGLE_API_KEY=""
-GOOGLE_CX_ID=""

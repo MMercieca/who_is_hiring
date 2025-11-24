@@ -1,5 +1,6 @@
 import requests
 import config
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 def get_html_content(url):
@@ -15,13 +16,16 @@ def get_html_content(url):
         print(f"Info --- Download Error: {err}")
         return None
 
-def extract_links(html, base_url):
+def extract_links(html, broad_career_page):
     if not html:
         return []
         
     soup = BeautifulSoup(html, 'html.parser')
     links = []
     
+    parsed_url = urlparse(broad_career_page)
+    base_url = parsed_url.scheme + "://" + parsed_url.netloc
+
     for tag in soup.find_all('a', href=True):
         text = tag.get_text(strip=True)
         href = tag['href']
@@ -29,7 +33,7 @@ def extract_links(html, base_url):
         # Basic cleanup
         if text and href and not href.startswith(('javascript', '#', 'mailto')):
             if href.startswith('/'):
-                href = base_url.rstrip('/') + href
+                href = base_url + href
             
             # Create the link object
             link_obj = {"text": text, "url": href}

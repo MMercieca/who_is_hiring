@@ -2,26 +2,20 @@ from openai import OpenAI
 import config
 import re
 
-def find_careers_page(target_company, company_website):
-    if not company_website:
+def find_company_website(target_company):
+    if not target_company:
         return None
 
     prompt = f"""
-    You are a research assistant that identifies careers pages.  Search the links
-    to identify which link is the careers page.
+    You are a corporate research assistant.  Search the web to find the official company website
+    of the company listed below.
 
-    Be careful.  
+    Be careful.  Find the company website, not reviews or ads.  
 
-    Prioritize links that match these terms:
-    1. "Apply Now" or "Search Jobs"
-    2. "Openings" or "Vacancies"
-    3. "Join our Team" or "Work with us"
-    4. "Careers" or "Jobs"
-    
-    Return ONLY the URL of the careers page. Do not explain. If it is not found, return "None".
+    Return ONLY the URL of the company website. Do not explain. If it is not found, return "None".
 
-    Company: {target_company}
-    Company website: {company_website}
+    Company:
+    {target_company}
     """
 
     try:
