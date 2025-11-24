@@ -1,7 +1,6 @@
 import argparse
-import search_tools
 import scraper
-from analyzers import find_careers_page, job_extractor
+from analyzers import find_company_website, find_careers_page, find_job_listings, job_extractor
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Find job openings for a specific company.")
@@ -23,45 +22,29 @@ def read_from_file(filename):
             search_company(target_company)
 
 def search_company(target_company):
-    # Step 1: Find the main website
-    website = search_tools.find_company_website(target_company)
-    if not website:
-        print("Info --- Could not find company website.")
-        return
-    print(f"Info --- Found Website: {website}")
-
-    # Step 2: Find the broad career page via Google
-    broad_career_page = search_tools.find_initial_career_page(website)
-    if not broad_career_page:
-        print("Info --- Could not find a career page via Google.")
-        return
-    print(f"Info --- Initial Career Page: {broad_career_page}")
-
-    # Step 3: Download that page
-    html_content = scraper.get_html_content(broad_career_page)
+    # 1. Get company website
+    company_website = find_company_website(target_company)
+    print(f"Info --- Company website: {company_website}")
     
-    # Step 4: Extract links
-    page_links = scraper.extract_links(html_content, website)
+    # 2. Find careers page
+    company_website_content = scraper.get_html_content(company_website)
+    company_website_links = scraper.extract_links(company_website_content, company_website)
+    career_page = find_careers_page(company_website_links)
+    print(f"Info --- The careers page is likely here: {career_page}")
     
-    # Step 5: Use AI to find the specific job board link
-    final_link = find_careers_page(page_links)
+    # 3. Find the page that has the listings
+    careers_page_content = scraper.get_html_content(career_page)
+    careers_page_links = scraper.extract_links(careers_page_content, career_page)
+    jobs_page = find_job_listings(careers_page_links, career_page)
+    print(f"Info --- Job openings page: {jobs_page}")
     
-    print("Info ---", "-" * 30)
-    print(f"Info --- The detailed job list is likely here: {final_link}")
-    print("Info ---", "-" * 30)
-
-    # 4. Extract Job Titles and URLs
-    print("Info --- Downloading job listing page...")
-    listings_html = scraper.get_html_content(final_link)
-    
-    # Get all raw links from that page
-    raw_links = scraper.extract_links(listings_html, website)
-    
-    # Use AI to filter down to just the job postings
-    jobs = job_extractor.extract_jobs_from_links(raw_links)
+    # 4. Download jobs postings and display
+    jobs_page_content = scraper.get_html_content(jobs_page)
+    jobs_links = scraper.extract_links(jobs_page_content, jobs_page)
+    jobs = job_extractor.extract_jobs_from_links(jobs_links, jobs_page)
 
     print(f"Info --- Found {len(jobs)} potential job postings:")
-    print(f"\"{target_company}\",\"careers page\",\"{final_link}\"")
+    print(f"\"{target_company}\",\"careers page\",\"{jobs_page}\"")
     for job in jobs:
         print(f"\"{target_company}\",\"{job['title']}\",\"{job['url']}\"")
 
