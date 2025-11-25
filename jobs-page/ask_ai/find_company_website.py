@@ -1,4 +1,4 @@
-from analyzers import ask_ai
+from ask_ai import query
 
 def find_company_website(target_company):
     if not target_company:
@@ -21,4 +21,4 @@ def find_company_website(target_company):
     {target_company}
     """
 
-    return ask_ai.query(prompt)
+    return query(prompt)

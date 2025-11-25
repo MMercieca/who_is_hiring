@@ -1,6 +1,6 @@
 import argparse
 import scraper
-from analyzers import find_company_website, find_careers_page, find_job_listings, job_extractor
+from ask_ai import find_company_website, find_careers_page, find_job_listings, job_extractor
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Find job openings for a specific company.")

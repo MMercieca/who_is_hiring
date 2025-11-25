@@ -1,4 +1,4 @@
-# ask_ai.py
+# query.py
 
 from openai import OpenAI
 import config
