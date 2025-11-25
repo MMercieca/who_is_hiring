@@ -71,3 +71,9 @@ To generate the CX ID,
 5. Copy the CX ID and place it in the `config.py`
 
 Google search fallback is now enabled.
+
+## Limitations
+
+We are making a web crawling bot.  Some companies block bots with CloudFlare or other services.  For those companies, we'll have to visit their website and careers page ourselves.
+
+To help get around that, we'll note the company website and careers pages along side the openings. We can visit these companies after we've exhausted the job openings that we were able to identify automatically.
