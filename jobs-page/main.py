@@ -1,6 +1,7 @@
 import argparse
 import scraper
 from ask_ai import find_company_website, find_careers_page, find_job_listings, job_extractor
+from ask_google import google_enabled, google_career_page
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Find job openings for a specific company.")
@@ -25,13 +26,26 @@ def search_company(target_company):
     # 1. Get company website
     company_website = find_company_website(target_company)
     print(f"Info --- Company website: {company_website}")
-    
+    print(f"\"{target_company}\",\"website\",\"{company_website}\"")
+
     # 2. Find careers page
-    company_website_content = scraper.get_html_content(company_website)
-    company_website_links = scraper.extract_links(company_website_content, company_website)
-    career_page = find_careers_page(company_website_links)
+    try:
+        company_website_content = scraper.get_html_content(company_website)
+        company_website_links = scraper.extract_links(company_website_content, company_website)
+        career_page = find_careers_page(company_website_links)
+    except:
+        career_page = None
+
+    if career_page == None and google_enabled():
+        print("Info --- Career page not found with OpenAI. Using Google fallback.")
+        google_career_page(target_company, company_website)
+
     print(f"Info --- The careers page is likely here: {career_page}")
     
+    if career_page == None or company_website == None:
+        print(f"Info --- could not find career page for {target_company}")
+        return
+
     # 3. Find the page that has the listings
     careers_page_content = scraper.get_html_content(career_page)
     careers_page_links = scraper.extract_links(careers_page_content, career_page)
